@@ -14,10 +14,21 @@ import cors from 'cors';
 
 const app = express();
 
-app.use(cors({
-  origin: 'http://localhost:5173',  // Allow your frontend origin
-  credentials: true,                 // If you need cookies/auth headers
-}));
+// ✅ allow both 5173 and 5174 (useful if using multiple Vite ports)
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // if you use cookies/auth headers
+  })
+);
 
 app.use(requestLogger); // logs API requests
 app.use(cookieParser());
