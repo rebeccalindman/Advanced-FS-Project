@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: my-secret-pw
+      POSTGRES_DB: my_database
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d # optional: SQL scripts
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment: # todo these can be moved to .env
+      DATABASE_URL: postgres://postgres:my-secret-pw@db:5432/my_database
+      JWT_SECRET: 123SuperCauliflowerABC!
+      REFRESH_TOKEN_SECRET: super123SecretBroccoliABC!
+    depends_on:
+      - db
+    #restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    #restart: unless-stopped
+
+
+volumes:
+  db-data:
