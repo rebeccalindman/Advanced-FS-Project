@@ -82,7 +82,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
       role: user.role,
     };
 
-    const accessToken = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "10m" });
+    const accessToken = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "10d" }); /** !!! CHANGE TO MINUTES ; DAYS IS FOR TESTING  */
 
     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET!, { expiresIn: '1d' });
 
