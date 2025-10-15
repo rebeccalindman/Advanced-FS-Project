@@ -1,8 +1,10 @@
 interface Note{
-    id: number;
+    id: string;
     title: string;
-    content: string;
-    categories: number[];
+    text: string;
+    category: string;
+    created_at: Date | null;
+    updated_at: Date | null;
 }
 
 export type {Note}

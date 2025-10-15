@@ -1,61 +1,105 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { api } from "../api/axiosInstance"; //** */ */ ✅ use your axios instance
 
 interface Note {
-  id: number;
+  id: string;  // UUID
   title: string;
-  content: string;
-  categories: number[];
+  text: string;
+  category: string;
+  created_at: Date;
+  updated_at: Date;
 }
 
-interface Category {
-  id: number;
-  name: string;
-  icon: string;
-}
 
 interface NotesState {
   notes: Note[];
-  categories: Category[]; // ✅ Add categories in the Redux store
   selectedNote: Note | null;
+  loading: boolean;
+  error: string | null;
 }
 
+// ✅ Thunks
+export const fetchNotes = createAsyncThunk("notes/fetchNotes", async (_, { rejectWithValue }) => {
+  try {
+    const response = await api.get("/notes"); // token automatically included
+    return response.data.notes || response.data;
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data || err.message);
+  }
+});
+
+export const addNote = createAsyncThunk(
+  "notes/addNote",
+  async (noteData: { title: string; text: string; category: string }, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/notes", noteData);
+      console.log("Add note response:", response.data);
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const editNote = createAsyncThunk("notes/editNote", async (note: Note, { rejectWithValue }) => {
+  try {
+    const response = await api.put(`/notes/${note.id}`, note);
+    return response.data;
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data || err.message);
+  }
+});
+
+export const deleteNote = createAsyncThunk("notes/deleteNote", async (id: string, { rejectWithValue }) => {
+  try {
+    await api.delete(`/notes/${id}`);
+    return id;
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data || err.message);
+  }
+});
+
 const initialState: NotesState = {
-  notes: JSON.parse(localStorage.getItem("notes") || "[]"),
-  categories: [ // ✅ Ensure default categories exist
-    { id: 1, name: "work", icon: "💼" },
-    { id: 2, name: "study", icon: "📚" },
-    { id: 3, name: "personal", icon: "🏡" },
-    { id: 4, name: "inspiration", icon: "💡" },
-  ],
+  notes: [],
   selectedNote: null,
+  loading: false,
+  error: null,
 };
 
 const notesSlice = createSlice({
   name: "notes",
   initialState,
   reducers: {
-    addNote: (state, action: PayloadAction<Note>) => {
-      state.notes.push(action.payload);
-      localStorage.setItem("notes", JSON.stringify(state.notes));
-    },
-    deleteNote: (state, action: PayloadAction<number>) => {
-      state.notes = state.notes.filter((note) => note.id !== action.payload);
-      localStorage.setItem("notes", JSON.stringify(state.notes));
-    },
-    editNote: (state, action: PayloadAction<Note>) => {
-      const { id, title, content, categories } = action.payload;
-      const noteIndex = state.notes.findIndex((note) => note.id === id);
-      if (noteIndex !== -1) {
-        state.notes[noteIndex] = { ...state.notes[noteIndex], title, content, categories };
-        localStorage.setItem("notes", JSON.stringify(state.notes));
-      }
-    },
-    selectNote: (state, action: PayloadAction<number>) => {
+    selectNote: (state, action: PayloadAction<string>) => {
       state.selectedNote = state.notes.find((note) => note.id === action.payload) || null;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchNotes.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchNotes.fulfilled, (state, action: PayloadAction<Note[]>) => {
+        state.loading = false;
+        state.notes = Array.isArray(action.payload) ? action.payload : [];
+      })
+      .addCase(fetchNotes.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(addNote.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(editNote.fulfilled, (state, action: PayloadAction<Note>) => {
+        const i = state.notes.findIndex((n) => n.id === action.payload.id);
+        if (i !== -1) state.notes[i] = action.payload;
+      })
+      .addCase(deleteNote.fulfilled, (state, action: PayloadAction<string>) => {
+        state.notes = state.notes.filter((n) => n.id !== action.payload);
+      });
+  },
 });
 
-export const { addNote, deleteNote, editNote, selectNote } = notesSlice.actions;
+export const { selectNote } = notesSlice.actions;
 export default notesSlice.reducer;
-

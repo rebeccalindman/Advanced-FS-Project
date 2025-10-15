@@ -3,11 +3,11 @@
 import { createBrowserRouter } from 'react-router-dom'
 
 
-import App from './App';
-import NewNote from './pages/NewNote.tsx'
-import AllNotesView from "./pages/AllNotesView.tsx"
+import App from './App.tsx';
+
 /* import NoteDetail from './components/NoteDetail.tsx'; */
-import EditNoteView from './pages/EditNoteView.tsx';
+
+import { NotesPage } from './pages/NotesPage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -16,11 +16,11 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <AllNotesView />
+                element: <NotesPage />
             },
             {
-                path: '/new-note',
-                element: <NewNote />
+                path: '/notes',
+                element: <NotesPage />
             },
             /* {
                 path: "note/:id",
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
             }, */
             {
                 path: "edit-note/:id",
-                element: <EditNoteView />, // Make sure you have this component
+                element: <p>Edit note view :</p> // Make sure you have this component
             },
         ],
     },
