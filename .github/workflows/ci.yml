@@ -1,0 +1,65 @@
+name: Build, Test & Docker
+
+# This workflow is triggered whenever a pull request is made to the "dev" branch
+on: 
+  pull_request: 
+    branches:
+      - main
+      - dev
+
+# The workflow consists of one job
+jobs:
+  build-and-test:
+    # The job will run on an virtual machine with the latest Ubuntu image
+    runs-on: ubuntu-latest
+    #container: #if not using docker, the job will run on an virtual machine with the latest Ubuntu image in a container 
+        #image: node:20-alpine #minimal docker image
+
+    # The steps that will be executed in the job
+    steps:
+      # 1️⃣ Checkout the repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Verify Docker Compose is installed
+      - name: Check Docker version
+        run: docker --version
+      - name: Check Docker Compose Version
+        run: docker compose version
+
+      # Check which branch is being built
+      - name: Show branch name
+        run: | 
+            echo "Ref: ${{ github.ref }}"
+            echo "Head ref: ${{ github.head_ref }}"
+            echo "Ref name:${{ github.ref_name }}"
+
+      # 3️⃣ Build API in the build stage for testing (devDependencies included)
+      - name: Build API for tests
+        run: docker build --target build -t my-api-test ./api
+
+      # 4️⃣ Run API tests inside the build-stage container
+      - name: Run API tests
+        run: docker run --rm my-api-test npm test ## ---rm gör att containern raderas efter testet körs oavasett lyckas eller misslyckas
+
+      # 5️⃣ Build API production image (without devDependencies)
+      - name: Build API production image
+        run: docker compose build api
+
+      # 6️⃣ Build frontend image
+      - name: Build frontend image
+        run: docker compose build frontend
+
+      # 7️⃣ Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }} # defined in repository settings
+          password: ${{ secrets.DOCKER_PASSWORD }} # defined in repository settings
+
+      # 8️⃣ Push API and frontend images (optional)
+      - name: Push API image
+        run: docker compose push api
+
+      - name: Push frontend image
+        run: docker compose push frontend

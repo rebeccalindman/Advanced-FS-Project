@@ -22,7 +22,7 @@ function Header() {
     <header>
       <h1>NoteNest</h1>
       <Navbar />
-      <Button text={isDark ? "Light Mode" : "Dark Mode"} onClick={() => setIsDark(!isDark)} />
+      <Button onClick={() => setIsDark(!isDark)}>{isDark ? "Light Mode" : "Dark Mode"}</Button>
     </header>
   );
 }

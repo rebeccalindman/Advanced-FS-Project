@@ -3,11 +3,11 @@
 import { createBrowserRouter } from 'react-router-dom'
 
 
-import App from './App.tsx';
+import App from './App';
 
 /* import NoteDetail from './components/NoteDetail.tsx'; */
 
-import { NotesPage } from './pages/NotesPage.tsx';
+import { NotesPage } from './pages/NotesPage';
 
 const router = createBrowserRouter([
     {

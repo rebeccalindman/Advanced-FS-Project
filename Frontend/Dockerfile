@@ -1,17 +1,14 @@
-# Stage 1: Build frontend
-FROM node:20-alpine AS build
+# frontend/Dockerfile
+FROM node:22-bullseye-slim
 
-# Install dependencies
+WORKDIR /app
+
 COPY package*.json ./
+
 RUN npm install
 
-# Copy source code and build
 COPY . .
-RUN npm run build
 
-# Stage 2: Serve with nginx
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 5174
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "dev"]

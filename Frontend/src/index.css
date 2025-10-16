@@ -1,26 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} 
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Your custom variables */
 :root {
   --color-primary: #4bdfb5;
   --color-secondary: #ffc107;
   --color-background: #f5deb3;
+  --color-background-2:rgb(255, 245, 239);
   --color-text: #000;
   --color-dark-background: #1a202c;
   --color-dark-text: #fff;
+  --color-accent-1: #395152;
 }
 
-
-
+/* Custom card class */
 .card {
-  background-color: var(--color-background);
+  background-color: rgb(232, 226, 223);
   padding: 1rem;
-  border-radius: 0.5rem;
+  border: #cfcbc7 solid 1px;
+  border-radius: 2rem;
   margin-bottom: 1rem;
+  width: fit-content;
+  min-width: 200px;
+  text-align: center;
+  justify-content: start;
+}
+.card:hover {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  border: #fff solid 1px;
+  cursor: pointer;
 }
 
+/* You can still have body, header, footer styling */
 body {
   background-color: var(--color-background);
   color: var(--color-text);
   display: flex;
-  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -29,72 +57,53 @@ body.dark {
   color: var(--color-dark-text);
 }
 
+/* Layout styles */
 div#root {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-template-rows: auto 1fr auto;
   gap: 1rem;
   height: 100%;
   width: 100%;
 }
 
-header {
-  background-color: var(--color-background);
-  color: var(--color-text);
-  display: flex;
-  justify-content: space-between;
+header, footer, aside { 
   padding: 1rem;
-  width: 100%;
 }
 
-header.dark {
+header, footer, aside {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+header, footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header.dark, footer.dark, aside.dark {
   background-color: var(--color-dark-background);
   color: var(--color-dark-text);
 }
 
 main {
   display: flex;
-  flex-direction: column;
+  flex: 1;
+  padding: 1rem;
   align-items: center;
-  padding: 1rem;
-  max-width: 768px;
-}
-
-aside {
-  background-color: var(--color-background);
-  padding: 1rem;
-}
-
-aside.dark {
-  background-color: var(--color-dark-background);
-}
-
-footer {
-  background-color: var(--color-background);
-  color: var(--color-text);
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem;
-  width: 100%;
-}
-
-footer.dark {
-  background-color: var(--color-dark-background);
-  color: var(--color-dark-text);
+  justify-content: center;
+  background-color: #f6f3ef ;
 }
 
 nav .active {
   color: var(--color-primary);
 }
 
-h2 {
-  font-size: 1.5rem;
-  font-weight: bold;
+li {
+  list-style: none;
 }
 
+/* Optional dark mode support via media query */
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
   }
 }
-

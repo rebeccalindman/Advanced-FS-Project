@@ -1,3 +1,4 @@
+
 services:
   db:
     image: postgres:14-alpine
@@ -5,34 +6,39 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: my-secret-pw
       POSTGRES_DB: my_database
-    volumes:
-      - ./db:/docker-entrypoint-initdb.d # optional: SQL scripts
-      - db-data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5433"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d 
+      - db-data:/var/lib/postgresql/data
 
   backend:
     build: ./backend
     ports:
       - "3000:3000"
-    environment: # todo these can be moved to .env
+    volumes:
+      - ./backend:/backend        # Mount backend source code
+      - backend_node_modules:/backend/node_modules     # separate volume for node_modules
+    environment:
       DATABASE_URL: postgres://postgres:my-secret-pw@db:5432/my_database
       JWT_SECRET: 123SuperCauliflowerABC!
       REFRESH_TOKEN_SECRET: super123SecretBroccoliABC!
     depends_on:
       - db
-    #restart: unless-stopped
 
   frontend:
     build: ./frontend
     ports:
-      - "80:80"
-    env_file:
-      - .env
+      - "5173:5173"          # Vite dev server port
+    volumes:
+      - ./frontend:/app       # Mount frontend source code
+      - /app/node_modules     # Container manages node_modules
+    command: ["npm", "run", "dev"]
+    environment:
+      VITE_BACKEND_URL: http://localhost:3000
     depends_on:
       - backend
-    #restart: unless-stopped
-
 
 volumes:
   db-data:
+  backend_node_modules:

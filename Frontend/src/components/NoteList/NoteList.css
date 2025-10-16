@@ -1,0 +1,10 @@
+.note-list{
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: aliceblue 1px solid;
+}
+

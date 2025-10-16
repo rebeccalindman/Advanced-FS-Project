@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { api } from "../api/axiosInstance"; //** */ */ ✅ use your axios instance
+import { api } from "../api/axiosInstance"; //** */ */ use your axios instance
 
 interface Note {
   id: string;  // UUID
@@ -18,15 +18,18 @@ interface NotesState {
   error: string | null;
 }
 
-// ✅ Thunks
-export const fetchNotes = createAsyncThunk("notes/fetchNotes", async (_, { rejectWithValue }) => {
-  try {
-    const response = await api.get("/notes"); // token automatically included
-    return response.data.notes || response.data;
-  } catch (err: any) {
-    return rejectWithValue(err.response?.data || err.message);
+// Thunks
+export const fetchNotes = createAsyncThunk(
+  "notes/fetchNotes",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/notes"); // token automatically included
+      return response.data.notes || response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
   }
-});
+);
 
 export const addNote = createAsyncThunk(
   "notes/addNote",
@@ -41,23 +44,29 @@ export const addNote = createAsyncThunk(
   }
 );
 
-export const editNote = createAsyncThunk("notes/editNote", async (note: Note, { rejectWithValue }) => {
-  try {
-    const response = await api.put(`/notes/${note.id}`, note);
-    return response.data;
-  } catch (err: any) {
-    return rejectWithValue(err.response?.data || err.message);
+export const editNote = createAsyncThunk(
+  "notes/editNote",
+  async (note: Note, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/notes/${note.id}`, note);
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
   }
-});
+);
 
-export const deleteNote = createAsyncThunk("notes/deleteNote", async (id: string, { rejectWithValue }) => {
-  try {
-    await api.delete(`/notes/${id}`);
-    return id;
-  } catch (err: any) {
-    return rejectWithValue(err.response?.data || err.message);
+export const deleteNote = createAsyncThunk(
+  "notes/deleteNote",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      await api.delete(`/notes/${id}`);
+      return id;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
   }
-});
+);
 
 const initialState: NotesState = {
   notes: [],
@@ -84,9 +93,12 @@ const notesSlice = createSlice({
         state.loading = false;
         state.notes = Array.isArray(action.payload) ? action.payload : [];
       })
-      .addCase(fetchNotes.rejected, (state, action) => {
+      .addCase(fetchNotes.rejected, (state, action: PayloadAction<{ message: string }>) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : action.payload?.message || "Something went wrong while fetching notes";
       })
       .addCase(addNote.fulfilled, (state) => {
         state.loading = false;
@@ -103,3 +115,4 @@ const notesSlice = createSlice({
 
 export const { selectNote } = notesSlice.actions;
 export default notesSlice.reducer;
+

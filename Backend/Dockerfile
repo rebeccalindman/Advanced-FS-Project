@@ -1,18 +1,21 @@
 # Backend/Dockerfile
 ######
 
-FROM node:20-alpine
+# multi-arch Node image (safe for Apple Silicon)
+FROM node:22-bullseye-slim
+
 WORKDIR /app
 
-# Install dependencies
-COPY package*.json tsconfig.json ./
+# Copy only package.json & package-lock.json first
+COPY package*.json ./
+
+# Install all dependencies inside container
 RUN npm install
 
 # Copy source code
 COPY . .
 
-# Expose backend port
 EXPOSE 3000
 
-# Start the backend
-CMD ["npm", "run", "dev"]  # or "start" if you compile to JS
+# Run nodemon
+CMD ["npm", "run", "dev"]
