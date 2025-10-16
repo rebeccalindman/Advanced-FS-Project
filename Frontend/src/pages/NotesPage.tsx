@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNotes, addNote} from "../store/notesSlice";
 import type { RootState, AppDispatch } from "../store/store";
+import NoteList from "../components/NoteList";
 
 export const NotesPage = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -32,22 +33,11 @@ export const NotesPage = () => {
 
 
     return (
-        <div>
+        <main>
         {loading && <p>Loading...</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}
         <button onClick={handleAdd}>Add Note</button>
-        <ul>
-            {Array.isArray(notes) && notes.length > 0 ? (
-                notes.map((n) => (
-                    <li key={n.id}>
-                    <strong>{n.title || "Untitled"}</strong> — {n.text || "No content"} ({n.category || "Uncategorized"})
-                    </li>
-                ))
-                ) : (
-                <p>No notes found.</p>
-                )
-            }
-        </ul>
-        </div>
+        <NoteList />
+        </main>
     );
 };

@@ -19,7 +19,7 @@ function Header() {
   }, [isDark]);
 
   return (
-    <header>
+    <header className="bg-white dark:bg-gray-800 p-4 flex items-center justify-between">
       <h1>NoteNest</h1>
       <Navbar />
       <Button text={isDark ? "Light Mode" : "Dark Mode"} onClick={() => setIsDark(!isDark)} />
