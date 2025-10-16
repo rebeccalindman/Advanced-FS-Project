@@ -1,15 +1,14 @@
-# Stage 1: Build frontend
+# frontend/Dockerfile
 FROM node:20-alpine AS build
+WORKDIR /app
 
-# Install dependencies
-COPY package*.json ./
+COPY package*.json tsconfig.json vite.config.* ./
 RUN npm install
 
-# Copy source code and build
 COPY . .
-RUN npm run build
+RUN vite build
 
-# Stage 2: Serve with nginx
+# Serve with nginx
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 
