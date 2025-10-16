@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNotes, addNote, editNote, deleteNote, selectNote } from "../store/notesSlice";
+import { fetchNotes, addNote} from "../store/notesSlice";
 import type { RootState, AppDispatch } from "../store/store";
 
 export const NotesPage = () => {

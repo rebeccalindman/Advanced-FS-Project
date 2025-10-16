@@ -13,9 +13,10 @@ dotenv.config();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+ /*  ssl: {
     rejectUnauthorized: false, // neon requires ssl connection but no strict verification
-  },
+  }, */
 });
 
 export default pool;
