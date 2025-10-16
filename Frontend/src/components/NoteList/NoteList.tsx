@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../store/store";
+import { RootState } from "../../store/store";
+import './NoteList.css';
 
 
 interface NoteListProps {
@@ -20,7 +21,7 @@ const NoteList: React.FC<NoteListProps> = ({ limit}) => {
   const displayedNotes = limit ? [...notes].reverse().slice(0, limit) : notes;
 
   return (
-    <ul className="flex flex-col w-full justify-center bg-[var(--color-primary)]">
+    <ul className="note-list">
       {displayedNotes.map((note) => (
         <li
           onClick={() => setSearchParams({ noteId: note.id.toString() })} // ✅ Update URL query

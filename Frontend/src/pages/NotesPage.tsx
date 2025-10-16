@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNotes, addNote} from "../store/notesSlice";
 import type { RootState, AppDispatch } from "../store/store";
-import NoteList from "../components/NoteList";
+import NoteList from "../components/NoteList/NoteList";
+import Button from "../components/Button/Button";
 
 export const NotesPage = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -36,7 +37,7 @@ export const NotesPage = () => {
         <main>
         {loading && <p>Loading...</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}
-        <button onClick={handleAdd}>Add Note</button>
+        <Button onClick={handleAdd}>Add Note</Button>
         <NoteList />
         </main>
     );

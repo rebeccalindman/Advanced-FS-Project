@@ -2,20 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} 
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 /* Your custom variables */
 :root {
   --color-primary: #4bdfb5;
   --color-secondary: #ffc107;
   --color-background: #f5deb3;
+  --color-background-2:rgb(255, 245, 239);
   --color-text: #000;
   --color-dark-background: #1a202c;
   --color-dark-text: #fff;
+  --color-accent-1: #395152;
 }
 
 /* Custom card class */
 .card {
-  background-color: rgb(255, 245, 239);
+  background-color: rgb(232, 226, 223);
   padding: 1rem;
+  border: #cfcbc7 solid 1px;
   border-radius: 2rem;
   margin-bottom: 1rem;
   width: fit-content;
@@ -45,8 +59,6 @@ body.dark {
 
 /* Layout styles */
 div#root {
-  display: flex;
-  flex-direction: column;
   gap: 1rem;
   height: 100%;
   width: 100%;
@@ -61,6 +73,12 @@ header, footer, aside {
   color: var(--color-text);
 }
 
+header, footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 header.dark, footer.dark, aside.dark {
   background-color: var(--color-dark-background);
   color: var(--color-dark-text);
@@ -72,6 +90,7 @@ main {
   padding: 1rem;
   align-items: center;
   justify-content: center;
+  background-color: #f6f3ef ;
 }
 
 nav .active {

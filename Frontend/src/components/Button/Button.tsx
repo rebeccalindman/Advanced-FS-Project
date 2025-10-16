@@ -1,13 +1,14 @@
 import './Button.css';
+
 interface ButtonProps {
-    text: string;
     onClick: (activity: Object) => void;
     disabled?: boolean;
     type?: "button" | "submit" | "reset";
     variant?: "primary" | "secondary";
+    children: React.ReactNode
 }
 
-function Button({ text, onClick, disabled, type = "button", variant }: ButtonProps) {
+function Button({ onClick, disabled, type = "button", variant, children }: ButtonProps) {
     const buttonVariant = variant || "primary";
     
     return (
@@ -17,9 +18,10 @@ function Button({ text, onClick, disabled, type = "button", variant }: ButtonPro
             type={type} 
             className={`button ${buttonVariant}`}
         >
-            {text}
+            {children}
         </button>
     );
 }
 
 export default Button;
+
