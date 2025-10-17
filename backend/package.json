@@ -1,0 +1,66 @@
+{
+  "name": "swingnotes",
+  "version": "1.0.0",
+  "description": "Individual backend project running on Nodejs, Express, JWT for authentication, bcrypt for hashing passwords. The database stores personal notes and allows edits.",
+  "keywords": [
+    "notes",
+    "database",
+    "notetaking",
+    "backend"
+  ],
+  "homepage": "https://github.com/rebeccalindman/SwingNotes-Nodejs-Express#readme",
+  "bugs": {
+    "url": "https://github.com/rebeccalindman/SwingNotes-Nodejs-Express/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rebeccalindman/SwingNotes-Nodejs-Express.git"
+  },
+  "license": "ISC",
+  "author": "Rebecca Lindman",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "dev": "nodemon"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "jsonwebtoken": "^9.0.2",
+    "node": "^22.16.0",
+    "pg": "^8.16.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^11.1.0",
+    "uuidv4": "^6.2.13",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.2",
+    "@types/jest": "^30.0.0",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.15.29",
+    "@types/pg": "^8.15.4",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "dotenv": "^16.5.0",
+    "eslint": "^9.28.0",
+    "express": "^5.1.0",
+    "install": "^0.13.0",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.10",
+    "npm": "^11.4.1",
+    "prettier": "^3.5.3",
+    "ts-jest": "^29.4.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
