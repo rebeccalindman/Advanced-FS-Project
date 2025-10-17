@@ -40,7 +40,7 @@ jobs:
       # 3️⃣ Build backend
       - name: Build backend for tests
         working-directory: ${{ github.workspace }}
-        run: docker build --target build -t my-backend-test ./backend
+        run: docker build -t my-backend-test ./backend
 
       # 4️⃣ Run API tests inside the build-stage container
       - name: Run backend tests
