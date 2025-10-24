@@ -1,7 +1,7 @@
 # Backend/Dockerfile
 ######
 
-FROM --platform=linux/arm64 node:22-bullseye-slim
+FROM node:22-bullseye-slim
 
 WORKDIR /app
 
