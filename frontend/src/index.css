@@ -57,6 +57,14 @@ body.dark {
   color: var(--color-dark-text);
 }
 
+main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1rem;
+
+}
+
 /* Layout styles */
 div#root {
   gap: 1rem;

@@ -6,6 +6,7 @@ import { addNote, editNote } from "../store/notesSlice";
 import Checkboxes from "./Checkboxes";
 import type { Note } from "../types/note";
 import type { RootState, AppDispatch } from "../store/store";
+import "./NoteForm.css";
 
 
 interface NoteFormProps {
@@ -24,49 +25,48 @@ const NoteForm: React.FC<NoteFormProps> = ({ noteToEdit, onEditDone, onChange })
   const [category, setCategory] = useState<string>(noteToEdit?.category || "");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
 
-  useEffect(() => {
+/*   useEffect(() => {
     // When a new note is selected for editing, update the state
     setTitle(noteToEdit?.title || "");
     setText(noteToEdit?.text || "");
     setCategory(noteToEdit?.category || "");
     setHasUnsavedChanges(false);
-  }, [noteToEdit]);
+  }, [noteToEdit]); */
 
   useEffect(() => {
     if (onChange) onChange(hasUnsavedChanges);
   }, [hasUnsavedChanges]);
 
-  const handleSave = () => {
-    if (noteToEdit) {
-      // If editing, update the note
-/*       dispatch(editNote({ ...noteToEdit, id, title, text, category: selectedCategories)); */
-    } else {
-      // If creating a new note
-      const newNote = { title, text, category: category};
-      dispatch(addNote(newNote));
-    }
+const handleSave = (e: React.FormEvent) => {
+  e.preventDefault(); // <--- add this
+  const category = "temporary";
+  if (noteToEdit) {
+    // editing logic
+  } else {
+    const newNote = { title, text, category };
+    dispatch(addNote(newNote));
+  }
 
-    // Reset form fields and exit edit mode
-    setTimeout(() => {
-      setTitle("");
-      setText("");
-      setCategory("");
-      if (onEditDone) onEditDone();
-      setHasUnsavedChanges(false);
-    }, 1000);
-  };
+  setTimeout(() => {
+    setTitle("");
+    setText("");
+    setCategory("");
+    if (onEditDone) onEditDone();
+    setHasUnsavedChanges(false);
+  }, 1000);
+};
 
   const handleChange = () => {
     setHasUnsavedChanges(true);
   };
 
   return (
-    <form className="flex flex-col gap-3 m-4 min-h-100">
-      <input className="outline p-2 rounded" type="text" placeholder="Title" value={title} onChange={(e) => { setTitle(e.target.value); handleChange(); }} />
-      <textarea className="outline p-2 flex-1 rounded" placeholder="A place for your thoughts..." value={text} onChange={(e) => { setText(e.target.value); handleChange(); }} />
+    <form>
+      <input type="text" placeholder="Title" value={title} onChange={(e) => { setTitle(e.target.value); handleChange(); }} />
+      <textarea placeholder="A place for your thoughts..." value={text} onChange={(e) => { setText(e.target.value); handleChange(); }} />
      {/*  <Checkboxes selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} onChange={handleChange} /> */}
-      <button className="btn" onClick={handleSave}>{noteToEdit ? "Save" : "Create"}</button>
-      {hasUnsavedChanges && <p className="mb-4 text-black font-bold">Unsaved changes!</p>}
+      <button type="submit" className="btn" onClick={handleSave}>{noteToEdit ? "Save" : "Create"}</button>
+      {hasUnsavedChanges && <p className="unsaved-changes-warning">Unsaved changes!</p>}
     </form>
   );
 };
