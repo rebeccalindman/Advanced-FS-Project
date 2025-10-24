@@ -3,12 +3,14 @@ import { Request, Response, NextFunction } from "express";
 import { fetchAllUsers, updateRoleOfUser, findUserById } from "../services/userService";
 import { createError } from "../utils/createError";
 import { HTTP_STATUS } from "../constants/httpStatus";
+import { TypedAuthRequest } from "../types/express/typedRequest";
+import { User } from "../types/user";
 
 
 /** *
  * * Admin only functions
  */
-export const getAllUsersForAdmin = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllUsersForAdmin = async (req:  TypedAuthRequest<User>, res: Response, next: NextFunction) => {
     try {
         const users = await fetchAllUsers();
         const countOfUsers = users.length;
@@ -19,7 +21,7 @@ export const getAllUsersForAdmin = async (req: Request, res: Response, next: Nex
     }
 }
 
-export const patchUserRoleById = async (req: Request, res: Response, next: NextFunction) => {
+export const patchUserRoleById = async (req:  TypedAuthRequest<User>, res: Response, next: NextFunction) => {
     const userId = req.params.id;
     const role = req.body.role;
     const validRoles = ["user", "admin"];

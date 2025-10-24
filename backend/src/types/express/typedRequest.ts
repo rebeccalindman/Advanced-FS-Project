@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { UserJwtPayload } from '../user';
+import { NoteUser } from '../note';
 
 // Generic typed request for body-only typing
 export interface TypedRequestBody<T> extends Request {
@@ -10,4 +11,5 @@ export interface TypedRequestBody<T> extends Request {
 export interface TypedAuthRequest<T> extends Request {
   body: T;
   user?: UserJwtPayload;
+  username?:NoteUser["username"];
 }

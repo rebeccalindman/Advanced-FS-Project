@@ -2,8 +2,10 @@
 import { Request, Response, NextFunction } from "express";
 import { createError } from "../utils/createError";
 import { HTTP_STATUS } from "../constants/httpStatus";
+import { TypedAuthRequest } from "../types/express/typedRequest";
+import { Note } from "../types/note";
 
-export const validateNewNote = (req: Request, res: Response, next: NextFunction) => {
+export const validateNewNote = (req: TypedAuthRequest<Note>, res: Response, next: NextFunction) => {
   const { title, text, category } = req.body;
 
   if (!title || !text || !category) {
