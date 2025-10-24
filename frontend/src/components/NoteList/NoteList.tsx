@@ -25,7 +25,7 @@ const NoteList: React.FC<NoteListProps> = ({ limit}) => {
       {displayedNotes.map((note) => (
         <li
           onClick={() => setSearchParams({ noteId: note.id.toString() })} // ✅ Update URL query
-          className="card w-full h-fit hover:cursor-pointer hover:bg-amber-200 hover:dark:bg-gray-700 bg-white"
+          className="note-card"
           key={`${note.id}-${note.created_at}`}
         >
           <h2>{note.title}</h2>
