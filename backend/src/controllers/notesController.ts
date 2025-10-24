@@ -20,12 +20,13 @@ import {
 import { findUserByUsername } from "../services/userService";
 
 import { noteToPublicNote } from "../utils/transformNotes";
-import { NewNote } from "../types/note";
+import { NewNote, Note, NoteUser } from "../types/note";
 import { HTTP_STATUS } from "../constants/httpStatus";
 import { TypedAuthRequest } from '../types/express/typedRequest';
 import { validate as isUUID } from 'uuid';
 import { createError } from "../utils/createError";
 import { hasEditOrOwnerAccess, hasOwnerAccess, hasReadAccess } from "../utils/accessControl";
+import { User } from "../types/user";
 
 export const createNote = async (
   req: TypedAuthRequest<NewNote>,
@@ -48,12 +49,13 @@ export const createNote = async (
 };
 
 
-export const getNoteById = async (req: TypedAuthRequest<any>, res: Response, next: NextFunction) => {
+export const getNoteById = async (req: TypedAuthRequest<Note>, res: Response, next: NextFunction) => {
   const userId = req.user?.id;
   const noteId = req.params.id;
+  const accessLevel = req.body.accessLevel;
 
   if (!hasReadAccess(req)) {
-    return next(createError(`Forbidden: You need read access to view this note, you have ${req.accessLevel} access`, HTTP_STATUS.FORBIDDEN));
+    return next(createError(`Forbidden: You need read access to view this note, you have ${accessLevel} access`, HTTP_STATUS.FORBIDDEN));
   }
 
   if (!userId) {
@@ -64,7 +66,7 @@ export const getNoteById = async (req: TypedAuthRequest<any>, res: Response, nex
     return next(createError("Invalid note ID format", HTTP_STATUS.BAD_REQUEST));
   }
 
-  if (!req.accessLevel || !['read', 'edit', 'owner'].includes(req.accessLevel)) {
+  if (!accessLevel || !['read', 'edit', 'owner'].includes(accessLevel)) {
     return next(createError(`Forbidden: You do not have permission to view this note`, HTTP_STATUS.FORBIDDEN));
   }
 
@@ -82,12 +84,13 @@ export const getNoteById = async (req: TypedAuthRequest<any>, res: Response, nex
 };
 
 
-export const deleteNoteForUser = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteNoteForUser = async (req: TypedAuthRequest<Note>, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
     const noteId = req.params.id;
+    const accessLevel = req.body.accessLevel;
 
     if(!hasOwnerAccess(req)) {
-        return next(createError(`Forbidden: You need owner access to delete this note, you have ${req.accessLevel} access`, HTTP_STATUS.FORBIDDEN));
+        return next(createError(`Forbidden: You need owner access to delete this note, you have ${accessLevel} access`, HTTP_STATUS.FORBIDDEN));
     }
 
     if (!userId) {
@@ -119,7 +122,7 @@ export const deleteNoteForUser = async (req: Request, res: Response, next: NextF
     }
 };
 
-export const getAllNotesForUser = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllNotesForUser = async (req: TypedAuthRequest<{}>, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
     if (!userId) {
         return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
@@ -134,7 +137,7 @@ export const getAllNotesForUser = async (req: Request, res: Response, next: Next
     }
 };
 
-export const getAllSharedNotesForUser = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllSharedNotesForUser = async (req: TypedAuthRequest<NoteUser>, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
     if (!userId) {
         return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
@@ -149,7 +152,7 @@ export const getAllSharedNotesForUser = async (req: Request, res: Response, next
     }
 };
 
-export const getNotesForCategory = async (req: Request, res: Response, next: NextFunction) => {
+export const getNotesForCategory = async (req: TypedAuthRequest<Note>, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
     if (!userId) {
         return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
@@ -169,7 +172,7 @@ export const getNotesForCategory = async (req: Request, res: Response, next: Nex
     }
 };
 
-export const getAllCategoriesForUser = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllCategoriesForUser = async (req: TypedAuthRequest<Note>, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
     if (!userId) {
         return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
@@ -188,7 +191,7 @@ export const getAllCategoriesForUser = async (req: Request, res: Response, next:
     }
     };
 
-    export const getNotesBySearchTerm = async (req: Request, res: Response, next: NextFunction) => {
+    export const getNotesBySearchTerm = async (req: TypedAuthRequest<Note>, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
     if (!userId) {
         return next(createError("Unauthorized, user ID not found", HTTP_STATUS.UNAUTHORIZED));
@@ -210,12 +213,12 @@ export const getAllCategoriesForUser = async (req: Request, res: Response, next:
     }
 };
 
-export const updateNoteForUser = async (req: TypedAuthRequest<NewNote>, res: Response, next: NextFunction) => {
+export const updateNoteForUser = async (req: TypedAuthRequest<Note>, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
     const noteId = req.params.id;
 
     if (!hasEditOrOwnerAccess(req)) {
-    return next(createError(`Forbidden: You need edit or owner access to update this note, you have ${req.accessLevel}`, 403));
+    return next(createError(`Forbidden: You need edit or owner access to update this note, you have are not`, 403));
   }
 
     if (!userId) {
@@ -270,10 +273,11 @@ type SharedNoteInput = {
   accessLevel: AccessLevel;
 };
 
-export const shareNoteWithUser = async (req: Request, res: Response, next: NextFunction) => {
+export const shareNoteWithUser = async (req: TypedAuthRequest<Note>, res: Response, next: NextFunction) => {
   const currentUserId = req.user?.id;
   const noteId = req.params.id;
-  const { username, accessLevel = 'read'} = req.body as SharedNoteInput;
+  const { accessLevel = 'read'} = req.body
+  const username = req.username || "";
   const sharedWith = username;
 
   if (accessLevel !== 'read' && accessLevel !== 'edit') {
@@ -281,7 +285,7 @@ export const shareNoteWithUser = async (req: Request, res: Response, next: NextF
   }
 
   if (!hasOwnerAccess(req)) {
-    return next(createError(`Forbidden: Only owners can share this note, you have ${req.accessLevel} access`, 403));
+    return next(createError(`Forbidden: Only owners can share this note, you have ${accessLevel} access`, 403));
   }
 
   if (!isUUID(noteId)) {
@@ -315,7 +319,7 @@ export const shareNoteWithUser = async (req: Request, res: Response, next: NextF
   }
 };
 
-export const getNoteAccessList = async (req: Request, res: Response, next: NextFunction) => {
+export const getNoteAccessList = async (req: TypedAuthRequest<Note>, res: Response, next: NextFunction) => {
   const noteId = req.params.id;
   
   if (!isUUID(noteId)) {
@@ -331,9 +335,10 @@ export const getNoteAccessList = async (req: Request, res: Response, next: NextF
   }
 };
 
-export const revokeAccessToNote = async (req: Request, res: Response, next: NextFunction) => {
+export const revokeAccessToNote = async (req: TypedAuthRequest<Note>, res: Response, next: NextFunction) => {
   const noteId = req.params.id;
   const userId = req.user?.id;
+  const accessLevel = req.body.accessLevel;
   
   if (!userId) {
     return next(createError("Unauthorized, user ID in request not found", HTTP_STATUS.UNAUTHORIZED));
@@ -344,7 +349,7 @@ export const revokeAccessToNote = async (req: Request, res: Response, next: Next
   }
 
   if (!hasOwnerAccess(req)) {
-    return next(createError(`Forbidden: Only owners can revoke access to this note, you have ${req.accessLevel} access`, HTTP_STATUS.FORBIDDEN));  
+    return next(createError(`Forbidden: Only owners can revoke access to this note, you have ${accessLevel} access`, HTTP_STATUS.FORBIDDEN));  
   }
 
   try {

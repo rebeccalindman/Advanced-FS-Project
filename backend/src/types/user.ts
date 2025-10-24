@@ -32,3 +32,15 @@ export type UserJwtPayload = {
   email: string;
   role: string;
 };
+
+export type RegisterInput = {
+  username: string;
+  password: string;
+  email: string;
+  role: "user" | "admin" | "owner"
+}
+
+export type LoginInput = {
+  identifier: string;
+  password: string;
+}

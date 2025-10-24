@@ -2,10 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import { findUserByEmail, findUserByUsername } from "../services/userService";
 import { createError } from "../utils/createError";
 import { HTTP_STATUS } from "../constants/httpStatus";
+import { TypedAuthRequest } from "../types/express/typedRequest";
+import { LoginInput, RegisterInput, User } from "../types/user";
 
 
-export const checkUserExists = async (req: Request, res: Response, next: NextFunction) => {
-  const { identifier } = req.body;
+export const checkUserExists = async (req: TypedAuthRequest<LoginInput>, res: Response, next: NextFunction) => {
+  const identifier = req.body.identifier;
 
     let user;
 
@@ -23,7 +25,7 @@ export const checkUserExists = async (req: Request, res: Response, next: NextFun
   next();
 };
 
-export const checkUserNotExists = async (req: Request, res: Response, next: NextFunction) => {
+export const checkUserNotExists = async (req: TypedAuthRequest<RegisterInput>, res: Response, next: NextFunction) => {
   const { email, username } = req.body;
 
   if (!email || !username) {

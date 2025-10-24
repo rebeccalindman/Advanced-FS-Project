@@ -1,8 +1,9 @@
 
 import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
+import { TypedAuthRequest } from '../types/express/typedRequest';
 
-export function requestLogger(req: Request, res: Response, next: NextFunction) {
+export function requestLogger(req: TypedAuthRequest<{}>, res: Response, next: NextFunction) {
   const start = Date.now();
 
   res.on('finish', () => {

@@ -7,17 +7,18 @@
 
 import { Request, Response, NextFunction } from "express";
 import { addNewUser } from "../services/userService";
-import { NewUser, PublicUser, UserJwtPayload } from "../types/user";
+import { LoginInput, NewUser, PublicUser, RegisterInput, User, UserJwtPayload } from "../types/user";
 import bcrypt from "bcrypt";
 import { createError } from "../utils/createError";
 import { HTTP_STATUS } from "../constants/httpStatus";
 import jwt from 'jsonwebtoken';
 import { RequestWithUser } from "../types/express/requestWithUser";
 import logger from "../utils/logger";
+import { TypedAuthRequest } from "../types/express/typedRequest";
 
 
 
-export async function register(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function register(req:  TypedAuthRequest<RegisterInput>, res: Response, next: NextFunction): Promise<void> {
   try {
     const { username, password, email, role } = req.body;
 
@@ -51,7 +52,7 @@ export async function register(req: Request, res: Response, next: NextFunction):
   }
 }
 
-export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const login = async (req: TypedAuthRequest<LoginInput>, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { password } = req.body;
     const user = (req as RequestWithUser).user;
