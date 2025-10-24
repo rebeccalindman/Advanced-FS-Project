@@ -37,7 +37,7 @@ export const addNote = createAsyncThunk(
     try {
       const response = await api.post("/notes", noteData);
       console.log("Add note response:", response.data);
-      return response.data;
+      return response.data.note;
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -49,7 +49,7 @@ export const editNote = createAsyncThunk(
   async (note: Note, { rejectWithValue }) => {
     try {
       const response = await api.put(`/notes/${note.id}`, note);
-      return response.data;
+      return response.data.note;
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -93,15 +93,18 @@ const notesSlice = createSlice({
         state.loading = false;
         state.notes = Array.isArray(action.payload) ? action.payload : [];
       })
-      .addCase(fetchNotes.rejected, (state, action: PayloadAction<{ message: string }>) => {
+/*       .addCase(fetchNotes.rejected, (state, action: PayloadAction<{ message: string }>) => {
         state.loading = false;
         state.error =
           typeof action.payload === "string"
             ? action.payload
             : action.payload?.message || "Something went wrong while fetching notes";
-      })
-      .addCase(addNote.fulfilled, (state) => {
+      }) */
+      .addCase(addNote.fulfilled, (state, action: PayloadAction<Note>) => {
         state.loading = false;
+        if (action.payload) {
+          state.notes.push(action.payload);
+        }
       })
       .addCase(editNote.fulfilled, (state, action: PayloadAction<Note>) => {
         const i = state.notes.findIndex((n) => n.id === action.payload.id);
