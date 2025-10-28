@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-id UUID PRIMARY KEY,               -- UUIDs must be generated in backend
+id UUID PRIMARY KEY UNIQUE,               -- UUIDs must be generated in backend
 username VARCHAR(100),
 email VARCHAR(100),
 created_at TIMESTAMPTZ DEFAULT now(),
@@ -9,7 +9,7 @@ role VARCHAR(25) DEFAULT 'user'
 );
 
 CREATE TABLE IF NOT EXISTS notes (
-    id UUID PRIMARY KEY,               -- UUIDs must be generated in backend
+    id UUID PRIMARY KEY UNIQUE,               -- UUIDs must be generated in backend
     owner_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     text TEXT NOT NULL,
