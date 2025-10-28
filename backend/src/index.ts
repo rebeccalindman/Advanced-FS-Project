@@ -15,7 +15,7 @@ import cors from 'cors';
 const app = express();
 
 // ✅ allow both 5173 and 5174 (useful if using multiple Vite ports)
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "localhost:3000"];
+/* const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "localhost:3000"]; */
 
 /* app.use(
   cors({
