@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { api } from "../api/axiosInstance"; //** */ */ use your axios instance
+import { api } from "../api/axiosInstance"; 
 
 interface Note {
   id: string;  // UUID

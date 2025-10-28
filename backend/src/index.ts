@@ -33,7 +33,13 @@ const app = express();
 //! DEV ONLY
 app.use(
   cors({
-    origin: "*",
+    origin: (origin, callback) => {
+      if (!origin || origin.startsWith("http://localhost")) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -51,6 +57,7 @@ setupSwagger(app);
 app.use(PublicRoutes);
 app.use(verifyJWT, ProtectedRoutes); // requires JWT authentication
 app.use('/admin', verifyJWT, authorizeAdmin, AdminRoutes); // requires admin role
+
 
 // Error handler
 app.use(errorHandler); 

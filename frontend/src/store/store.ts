@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import notesReducer from "./notesSlice"; // ✅ Ensure this path is correct
+import notesReducer from "./notesSlice"; 
+import authReducer from "./authSlice";
 
 export const store = configureStore({
   reducer: {
-    notes: notesReducer, // ✅ Must match what is used in `useSelector`
+    notes: notesReducer, // Must match what is used in `useSelector`
+    auth: authReducer,
   },
 });
 
