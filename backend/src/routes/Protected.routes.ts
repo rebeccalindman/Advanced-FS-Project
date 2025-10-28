@@ -15,6 +15,7 @@ const router = Router();
  * /notes/categories:
  *   get:
  *     summary: Get all note categories for the user
+ *     description: Gets all note categories for a user. The user can create their own categories.
  *     tags:
  *       - Notes
  *     security:
@@ -40,6 +41,7 @@ router.get('/notes/categories', getAllCategoriesForUser);
  * /notes/categories:
  *   get:
  *     summary: Get all note categories for the user
+ *     description: Desc to be added
  *     tags:
  *       - Notes
  *     security:
@@ -67,6 +69,7 @@ router.get('/notes/categories/:category', getNotesForCategory)
  * /notes/search:
  *   get:
  *     summary: Search notes
+ *     description: Desc to be added
  *     tags:
  *       - Notes
  *     security:
@@ -99,6 +102,7 @@ router.get('/notes/search', getNotesBySearchTerm);
  * /notes/shared:
  *   get:
  *     summary: Get all notes shared with the user, which the user does not own themselves
+ *     description: Desc to be added
  *     tags:
  *       - Note-sharing
  *     security:
@@ -125,6 +129,7 @@ router.get('/notes/shared', getAllSharedNotesForUser);
  * /notes:
  *   get:
  *     summary: Get all notes for the user
+ *     description: Desc to be added
  *     tags:
  *       - Notes
  *     security:
@@ -151,6 +156,7 @@ router.get('/notes', getAllNotesForUser);
  * /notes:
  *   post:
  *     summary: Create a new note
+ *     description: Desc to be added
  *     tags: 
  *       - Notes
  *     security:
@@ -184,6 +190,7 @@ router.post("/notes", validateNewNote, createNote);
  * /notes/{id}:
  *   delete:
  *     summary: Delete a note
+ *     description: Desc to be added
  *     tags:
  *       - Notes
  *     security:
@@ -224,6 +231,7 @@ router.delete('/notes/:id', attachNoteAccessLevel, deleteNoteForUser);
  * /notes/{id}:
  *   get:
  *     summary: Get a single note
+ *     description: Desc to be added
  *     tags:
  *       - Notes
  *     security:
@@ -256,6 +264,7 @@ router.get('/notes/:id', attachNoteAccessLevel, getNoteById);
  * /notes/{id}:
  *   put:
  *     summary: Update a note
+ *     description: Desc to be added
  *     tags:
  *       - Notes
  *     security:
@@ -296,6 +305,7 @@ router.put('/notes/:id', attachNoteAccessLevel, updateNoteForUser);
  * /notes/{id}/share:
  *   post:
  *     summary: Share a note with another user
+ *     description: Desc to be added
  *     tags:
  *       - Note-sharing
  *     security:
@@ -337,6 +347,7 @@ router.post ('/notes/:id/share', attachNoteAccessLevel, shareNoteWithUser);
  * /notes/{id}/share:
  *   delete:
  *     summary: Revoke access for other users to a shared note
+ *     description: Desc to be added
  *     tags:
  *       - Note-sharing
  *     security:
@@ -373,6 +384,7 @@ router.delete('/notes/:id/share', attachNoteAccessLevel, revokeAccessToNote);
  * /notes/{id}/access-list:
  *   get:
  *     summary: Get access list of a note
+ *     description: Desc to be added
  *     tags:
  *       - Note-sharing
  *     security:
@@ -470,7 +482,7 @@ router.post('/refresh', refreshToken);
  *     tags:
  *       - Auth
  *     security:
- *       - bearerAuth []
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Logout successful
