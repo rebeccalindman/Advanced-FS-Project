@@ -55,8 +55,9 @@ INSERT INTO categories (name, icon) VALUES
   ('Work', '💼'),
   ('Personal', '🏠'),
   ('Ideas', '💡'),
-  ('Urgent', '⚠️')
-  ON CONFLICT (id) DO NOTHING;
+  ('Urgent', '⚠️'),
+  ('Other', '🌟')
+  ON CONFLICT (name) DO NOTHING;
 
 CREATE TABLE note_categories (
   note_id UUID REFERENCES notes(id) ON DELETE CASCADE,
