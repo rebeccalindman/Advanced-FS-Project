@@ -1,12 +1,14 @@
 // /services/userService.ts
 import { NewUser, PublicUser } from "../types/user";
 import pool from "../db";
+import { v4 as uuidv4 } from 'uuid';
 
 
 export const addNewUser = async (user: NewUser): Promise<PublicUser> => {
-  const values = [user.username, user.hashedpassword, user.email];
+  const newId = uuidv4();
+  const values = [newId, user.username, user.hashedpassword, user.email];
   let query = `
-    INSERT INTO users (username, hashedpassword, email`;
+    INSERT INTO users (id, username, hashedpassword, email`;
 
   if (user.role) { // role is optional, this prevents null in DB
     query += `, role`;
@@ -14,7 +16,7 @@ export const addNewUser = async (user: NewUser): Promise<PublicUser> => {
   }
 
   query += `)
-    VALUES ($1, $2, $3${user.role ? ', $4' : ''})
+    VALUES ($1, $2, $3, $4 ${user.role ? ', $5' : ''})
     RETURNING id, username, email, role, created_at`;
 
   const result = await pool.query(query, values);
