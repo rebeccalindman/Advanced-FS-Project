@@ -3,7 +3,7 @@ import pool from "../db";
 import { NewNote, PublicNote, Note } from "../types/note";
 import { notesToPublicNotes } from "../utils/transformNotes";
 import { PublicUser } from "../types/user";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from "uuid";
 
 export const fetchNoteByIdForUser = async (noteId: string, userId: string): Promise<Note | null> => {
     const result = await pool.query(
@@ -23,7 +23,6 @@ export const addNewNote = async (note: NewNote, userId: string): Promise<PublicN
 
     try {
         await client.query('BEGIN');
-
         const newId = uuidv4();
 
         const result = await client.query(
