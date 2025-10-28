@@ -6,7 +6,7 @@ import NoteList from "../components/NoteList/NoteList";
 import Button from "../components/Button/Button";
 import NoteForm from "../components/NoteForm";
 
-export const NotesPage = () => {
+const NotesPage = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { notes, loading, error } = useSelector((state: RootState) => state.notes);
 
@@ -28,3 +28,5 @@ export const NotesPage = () => {
         </main>
     );
 };
+
+export default NotesPage;

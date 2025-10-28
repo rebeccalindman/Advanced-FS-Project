@@ -7,7 +7,8 @@ import App from './App';
 
 /* import NoteDetail from './components/NoteDetail.tsx'; */
 
-import { NotesPage } from './pages/NotesPage';
+import NotesPage from './pages/NotesPage';
+import  LogInPage from './pages/LogInPage/LogInPage';
 
 const router = createBrowserRouter([
     {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
             {
                 path: "edit-note/:id",
                 element: <p>Edit note view :</p> // Make sure you have this component
+            },
+            {
+                path: "login",
+                element: <LogInPage/> // Make sure you have this component
             },
         ],
     },
