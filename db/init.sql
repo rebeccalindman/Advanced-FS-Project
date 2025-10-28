@@ -26,17 +26,37 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER set_updated_at
-BEFORE UPDATE ON users
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
+-- TRIGGERS (check if they exist first)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'set_updated_at') THEN
+    CREATE TRIGGER set_updated_at
+    BEFORE UPDATE ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+  END IF;
+END;
+$$;
 
-CREATE TRIGGER set_updated_at_on_notes
-BEFORE UPDATE ON notes
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'set_updated_at_on_notes') THEN
+    CREATE TRIGGER set_updated_at_on_notes
+    BEFORE UPDATE ON notes
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+  END IF;
+END;
+$$;
 
-CREATE TYPE access_level_enum AS ENUM ('read', 'edit', 'owner');
+-- ENUM TYPE
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'access_level_enum') THEN
+    CREATE TYPE access_level_enum AS ENUM ('read', 'edit', 'owner');
+  END IF;
+END;
+$$;
 
 CREATE TABLE note_user (
   user_id UUID REFERENCES users(id),
