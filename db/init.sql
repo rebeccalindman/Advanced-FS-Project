@@ -53,8 +53,6 @@ CREATE TABLE categories (
   id SERIAL PRIMARY KEY,         -- auto-incrementing ID
   name VARCHAR(100) NOT NULL,    -- category name
   icon VARCHAR(50),              -- optional icon string (e.g. emoji or icon name)
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
 );
 
 INSERT INTO categories (name, icon) VALUES

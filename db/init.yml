@@ -1,0 +1,8 @@
+- name: Run init.sqgl against Azure DB
+  env: 
+    PGHOST: ${{ secrets.PGHOST }}
+    PGUSER: ${{ secrets.PGUSER }} 
+    PGDATABASE: ${{ secrets.PGDATABASE }}
+    PGPASSWORD: ${{ secrets.PGPASSWORD }}
+  run: |
+    psql "host=$PGHOST user=$PGUSER dbname=$PGDATABASE password=$PGPASSWORD" -f db/init.sql

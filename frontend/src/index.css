@@ -26,18 +26,23 @@
 }
 
 /* Custom card class */
-.card {
+.note-card {
   background-color: rgb(232, 226, 223);
   padding: 1rem;
   border: #cfcbc7 solid 1px;
-  border-radius: 2rem;
+  border-radius: none;
   margin-bottom: 1rem;
   width: fit-content;
   min-width: 200px;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
   text-align: center;
+  text-wrap: wrap;
   justify-content: start;
+  aspect-ratio: 1/1;
 }
-.card:hover {
+.note-card:hover {
   background-color: var(--color-background);
   color: var(--color-text);
   border: #fff solid 1px;
