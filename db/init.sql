@@ -58,16 +58,16 @@ BEGIN
 END;
 $$;
 
-CREATE TABLE note_user (
+CREATE TABLE IF NOT EXISTS note_user (
   user_id UUID REFERENCES users(id),
   note_id UUID REFERENCES notes(id),
   access_level access_level_enum DEFAULT 'read',
   PRIMARY KEY (user_id, note_id)
 );
 
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
   id SERIAL PRIMARY KEY,         -- auto-incrementing ID
-  name VARCHAR(100) NOT NULL,    -- category name
+  name VARCHAR(100) NOT NULL UNIQUE,    -- category name
   icon VARCHAR(50)              -- optional icon string (e.g. emoji or icon name)
 );
 
@@ -79,7 +79,7 @@ INSERT INTO categories (name, icon) VALUES
   ('Other', '🌟')
   ON CONFLICT (name) DO NOTHING;
 
-CREATE TABLE note_categories (
+CREATE TABLE IF NOT EXISTS note_categories (
   note_id UUID REFERENCES notes(id) ON DELETE CASCADE,
   category_id INT REFERENCES categories(id) ON DELETE CASCADE,
   PRIMARY KEY (note_id, category_id)
