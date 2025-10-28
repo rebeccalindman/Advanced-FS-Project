@@ -1,7 +1,5 @@
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 CREATE TABLE IF NOT EXISTS users (
-id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+id UUID PRIMARY KEY,               -- UUIDs must be generated in backend
 username VARCHAR(100),
 email VARCHAR(100),
 created_at TIMESTAMPTZ DEFAULT now(),
@@ -10,10 +8,8 @@ hashedpassword TEXT,
 role VARCHAR(25) DEFAULT 'user'
 );
 
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 CREATE TABLE IF NOT EXISTS notes (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY,               -- UUIDs must be generated in backend
     owner_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     text TEXT NOT NULL,
@@ -59,7 +55,8 @@ INSERT INTO categories (name, icon) VALUES
   ('Work', '💼'),
   ('Personal', '🏠'),
   ('Ideas', '💡'),
-  ('Urgent', '⚠️');
+  ('Urgent', '⚠️')
+  ON CONFLICT (id) DO NOTHING;
 
 CREATE TABLE note_categories (
   note_id UUID REFERENCES notes(id) ON DELETE CASCADE,
@@ -74,4 +71,4 @@ VALUES (
     'test@example.com',
     '$2b$10$WjJPGqTq6lhZ.sid75m3veT/hNUFCAGdl0BuezyIlq8cRM2ccQU0e', -- hashed password
     'admin'
-);
+) ON CONFLICT (id) DO NOTHING;
