@@ -48,7 +48,7 @@ CREATE TABLE note_user (
 CREATE TABLE categories (
   id SERIAL PRIMARY KEY,         -- auto-incrementing ID
   name VARCHAR(100) NOT NULL,    -- category name
-  icon VARCHAR(50),              -- optional icon string (e.g. emoji or icon name)
+  icon VARCHAR(50)              -- optional icon string (e.g. emoji or icon name)
 );
 
 INSERT INTO categories (name, icon) VALUES
