@@ -1,5 +1,5 @@
 # frontend/Dockerfile
-FROM node:22-bullseye-slim
+FROM node:18-bullseye-slim
 
 WORKDIR /app
 

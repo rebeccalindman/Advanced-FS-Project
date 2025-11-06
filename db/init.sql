@@ -1,7 +1,5 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 CREATE TABLE IF NOT EXISTS users (
-id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+id UUID PRIMARY KEY UNIQUE,               -- UUIDs must be generated in backend
 username VARCHAR(100),
 email VARCHAR(100),
 created_at TIMESTAMPTZ DEFAULT now(),
@@ -10,10 +8,8 @@ hashedpassword TEXT,
 role VARCHAR(25) DEFAULT 'user'
 );
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 CREATE TABLE IF NOT EXISTS notes (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY UNIQUE,               -- UUIDs must be generated in backend
     owner_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     text TEXT NOT NULL,
@@ -30,40 +26,60 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER set_updated_at
-BEFORE UPDATE ON users
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
+-- TRIGGERS (check if they exist first)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'set_updated_at') THEN
+    CREATE TRIGGER set_updated_at
+    BEFORE UPDATE ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+  END IF;
+END;
+$$;
 
-CREATE TRIGGER set_updated_at_on_notes
-BEFORE UPDATE ON notes
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'set_updated_at_on_notes') THEN
+    CREATE TRIGGER set_updated_at_on_notes
+    BEFORE UPDATE ON notes
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+  END IF;
+END;
+$$;
 
-CREATE TYPE access_level_enum AS ENUM ('read', 'edit', 'owner');
+-- ENUM TYPE
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'access_level_enum') THEN
+    CREATE TYPE access_level_enum AS ENUM ('read', 'edit', 'owner');
+  END IF;
+END;
+$$;
 
-CREATE TABLE note_user (
+CREATE TABLE IF NOT EXISTS note_user (
   user_id UUID REFERENCES users(id),
   note_id UUID REFERENCES notes(id),
   access_level access_level_enum DEFAULT 'read',
   PRIMARY KEY (user_id, note_id)
 );
 
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
   id SERIAL PRIMARY KEY,         -- auto-incrementing ID
-  name VARCHAR(100) NOT NULL,    -- category name
-  icon VARCHAR(50),              -- optional icon string (e.g. emoji or icon name)
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
+  name VARCHAR(100) NOT NULL UNIQUE,    -- category name
+  icon VARCHAR(50)              -- optional icon string (e.g. emoji or icon name)
 );
 
 INSERT INTO categories (name, icon) VALUES
   ('Work', '💼'),
   ('Personal', '🏠'),
   ('Ideas', '💡'),
-  ('Urgent', '⚠️');
+  ('Urgent', '⚠️'),
+  ('Other', '🌟')
+  ON CONFLICT (name) DO NOTHING;
 
-CREATE TABLE note_categories (
+CREATE TABLE IF NOT EXISTS note_categories (
   note_id UUID REFERENCES notes(id) ON DELETE CASCADE,
   category_id INT REFERENCES categories(id) ON DELETE CASCADE,
   PRIMARY KEY (note_id, category_id)
@@ -76,4 +92,4 @@ VALUES (
     'test@example.com',
     '$2b$10$WjJPGqTq6lhZ.sid75m3veT/hNUFCAGdl0BuezyIlq8cRM2ccQU0e', -- hashed password
     'admin'
-);
+) ON CONFLICT (id) DO NOTHING;

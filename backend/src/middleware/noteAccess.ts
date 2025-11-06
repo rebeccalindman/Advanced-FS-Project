@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import pool from '../db'; // adjust to your db import
 import {createError} from '../utils/createError';
+import { TypedAuthRequest } from '../types/express/typedRequest';
+import { Note } from '../types/note';
 
 
 export const attachNoteAccessLevel = async (
-  req: Request,
+  req: TypedAuthRequest<Note>,
   res: Response,
   next: NextFunction
 ) => {
@@ -22,7 +24,7 @@ export const attachNoteAccessLevel = async (
 
 /*     if (user.role === 'admin') {
       // Admin has full access
-      req.accessLevel = 'owner';
+      req.body.accessLevel = 'owner';
       return next();
     } */
 
@@ -36,7 +38,7 @@ export const attachNoteAccessLevel = async (
       return next(createError('Access denied to this note', 403));
     }
 
-    req.accessLevel = result.rows[0].access_level;
+    req.body.accessLevel = result.rows[0].access_level;
 
     next();
   } catch (error) {

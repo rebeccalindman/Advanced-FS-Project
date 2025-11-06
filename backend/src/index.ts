@@ -15,9 +15,9 @@ import cors from 'cors';
 const app = express();
 
 // ✅ allow both 5173 and 5174 (useful if using multiple Vite ports)
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+/* const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "localhost:3000"]; */
 
-app.use(
+/* app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
@@ -28,7 +28,22 @@ app.use(
     },
     credentials: true, // if you use cookies/auth headers
   })
+); */
+
+//! DEV ONLY
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || origin.startsWith("http://localhost")) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
 );
+//!
 
 app.use(requestLogger); // logs API requests
 app.use(cookieParser());
@@ -40,8 +55,10 @@ app.use(express.json());
 setupSwagger(app);
 // Routes
 app.use(PublicRoutes);
-app.use(verifyJWT, ProtectedRoutes); // requires JWT authentication
+// app.use(verifyJWT, ProtectedRoutes); // requires JWT authentication
+app.use(ProtectedRoutes); // ! no JWT authentication right now
 app.use('/admin', verifyJWT, authorizeAdmin, AdminRoutes); // requires admin role
+
 
 // Error handler
 app.use(errorHandler); 

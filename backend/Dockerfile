@@ -1,7 +1,6 @@
 # Backend/Dockerfile
 ######
 
-# multi-arch Node image (safe for Apple Silicon)
 FROM node:22-bullseye-slim
 
 WORKDIR /app

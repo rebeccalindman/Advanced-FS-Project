@@ -3,6 +3,7 @@ import pool from "../db";
 import { NewNote, PublicNote, Note } from "../types/note";
 import { notesToPublicNotes } from "../utils/transformNotes";
 import { PublicUser } from "../types/user";
+import {v4 as uuidv4} from "uuid";
 
 export const fetchNoteByIdForUser = async (noteId: string, userId: string): Promise<Note | null> => {
     const result = await pool.query(
@@ -22,12 +23,13 @@ export const addNewNote = async (note: NewNote, userId: string): Promise<PublicN
 
     try {
         await client.query('BEGIN');
+        const newId = uuidv4();
 
         const result = await client.query(
-        `INSERT INTO notes (title, text, category, owner_id)
-        VALUES ($1, $2, $3, $4)
+        `INSERT INTO notes (id, title, text, category, owner_id)
+        VALUES ($1, $2, $3, $4, $5)
         RETURNING id, title, text, category, created_at, updated_at`,
-        [note.title, note.text, note.category, userId]
+        [newId, note.title, note.text, note.category, userId]
         );
 
         const newNote = result.rows[0];

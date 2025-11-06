@@ -2,10 +2,11 @@ import { NextFunction, Request, Response  } from "express";
 import { createError } from "../utils/createError";
 import { HTTP_STATUS } from "../constants/httpStatus";
 import jwt from "jsonwebtoken";
-import { UserJwtPayload } from "../types/user";
+import { LoginInput, RegisterInput, UserJwtPayload } from "../types/user";
+import { TypedAuthRequest } from "../types/express/typedRequest";
 
 
-export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
+export const verifyJWT = (req: TypedAuthRequest<{}>, res: Response, next: NextFunction) => {
     const JWT_SECRET = process.env.JWT_SECRET;
 
     if (!JWT_SECRET) {
@@ -40,22 +41,23 @@ export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
 };
 
 
-export const validateRegisterInput = (req: Request, res: Response, next: NextFunction) => {
+export const validateRegisterInput = (req: TypedAuthRequest<RegisterInput>, res: Response, next: NextFunction) => {
     const { username, password, email } = req.body;
     if (!username || !password || !email) {
         return next(createError("Missing required fields", HTTP_STATUS.BAD_REQUEST));
     }
     next();
 };
-export const validateLoginFields = (req: Request, res: Response, next: NextFunction) => {
-    const { identifier, password } = req.body;
+export const validateLoginFields = (req: TypedAuthRequest<LoginInput>, res: Response, next: NextFunction) => {
+    const { password } = req.body;
+    const identifier = req.body.identifier;
     if (!identifier || !password) {
         return next(createError("Email or username and password are required", HTTP_STATUS.BAD_REQUEST));
     }
     next();
 };
 
-export const authorizeAdmin = (req: Request, res: Response, next: NextFunction) => {
+export const authorizeAdmin = (req: TypedAuthRequest<{}>, res: Response, next: NextFunction) => {
   if (!req.user) {
     return next(createError("Unauthorized: No user data", HTTP_STATUS.UNAUTHORIZED));
   }

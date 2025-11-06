@@ -186,11 +186,14 @@ export const setupSwagger = (app: Express) => {
   
   const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
+/*   console.log(JSON.stringify(swaggerSpec, null, 2)); */
+
+
   // ⚡ TypeScript-safe version
-  app.use(
+/*   app.use(
     "/api-docs",
     swaggerUi.serve as unknown as RequestHandler[], // cast fixes TS error
     swaggerUi.setup(swaggerSpec, { explorer: true })
-  );
+  ); */
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };
-
