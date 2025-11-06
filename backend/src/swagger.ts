@@ -186,7 +186,7 @@ export const setupSwagger = (app: Express) => {
   
   const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-  console.log(JSON.stringify(swaggerSpec, null, 2));
+/*   console.log(JSON.stringify(swaggerSpec, null, 2)); */
 
 
   // ⚡ TypeScript-safe version

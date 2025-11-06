@@ -55,7 +55,8 @@ app.use(express.json());
 setupSwagger(app);
 // Routes
 app.use(PublicRoutes);
-app.use(verifyJWT, ProtectedRoutes); // requires JWT authentication
+// app.use(verifyJWT, ProtectedRoutes); // requires JWT authentication
+app.use(ProtectedRoutes); // ! no JWT authentication right now
 app.use('/admin', verifyJWT, authorizeAdmin, AdminRoutes); // requires admin role
 
 
